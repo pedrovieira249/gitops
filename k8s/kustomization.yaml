@@ -8,4 +8,4 @@ resources:
 images:
 - name: goserver-gitops
   newName: pedrovieira249/gitops
-  newTag: newTag
+  newTag: 0c4238bc91dd77a4e0cba9ad9e599f0fb9753ef5
