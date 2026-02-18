@@ -39,20 +39,20 @@ jobs:
       - name: Setup Kustomize
         uses: imranismail/setup-kustomize@v1
         with:
-          version: '4.5.7' 
+          kustomize-version: '4.5.7'
 
       # 5. Atualizar a imagem no kustomization.yaml
       - name: Update Kustomization with new image tag
-        env:
-          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
         run: |
-          kustomize edit set image goserver-gitops=${DOCKERHUB_USERNAME}/gitops:${{ github.sha }}
+          # Certifique-se que o nome 'goserver-gitops' é o mesmo que está no seu kustomization.yaml
+          kustomize edit set image goserver-gitops=${{ secrets.DOCKERHUB_USERNAME }}/gitops:${{ github.sha }}
 
-      # 6. Commit
+      # 6. Commit das alterações
       - name: Commit
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add kustomization.yaml # Passo essencial: adicionar o arquivo alterado
           git commit -m "Update kustomization.yaml with new image tag: ${GITHUB_SHA}"
 
       # 7. Push
@@ -60,5 +60,4 @@ jobs:
         uses: ad-m/github-push-action@v0.6.0
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          repository: ${{ github.repository }} # O repositório é o mesmo do workflow, então usamos a variável de ambiente
           branch: main
