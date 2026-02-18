@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: goserver-gitops
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: goserver-gitops
+  template:
+    metadata:
+      labels:
+        app: goserver-gitops
+    spec:
+      containers:
+        - name: goserver-gitops
+          image: goserver-gitops
+          resources:
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
+          ports:
+            - containerPort: 8080

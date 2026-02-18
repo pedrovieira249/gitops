@@ -34,3 +34,31 @@ jobs:
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/gitops:${{ github.sha }}
             ${{ secrets.DOCKERHUB_USERNAME }}/gitops:latest
+      
+      # 4. Configurar o Kustomize para atualizar a imagem no k8s
+      - name: Setup Kustomize
+        uses: imranismail/setup-kustomize@v1
+        with:
+          version: '4.5.7' 
+
+      # 5. Atualizar a imagem no kustomization.yaml
+      - name: Update Kustomization with new image tag
+        env:
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+        run: |
+          kustomize edit set image goserver-gitops=${DOCKERHUB_USERNAME}/gitops:${{ github.sha }}
+
+      # 6. Commit
+      - name: Commit
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git commit -m "Update kustomization.yaml with new image tag: ${GITHUB_SHA}"
+
+      # 7. Push
+      - name: Push changes
+        uses: ad-m/github-push-action@v0.6.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          repository: ${{ github.repository }} # O repositório é o mesmo do workflow, então usamos a variável de ambiente
+          branch: main

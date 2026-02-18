@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: goserver-gitops-service
+spec:
+  selector:
+    app: goserver-gitops
+  ports:
+    - port: 8080
+      targetPort: 8080
+  type: LoadBalancer
