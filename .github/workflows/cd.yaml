@@ -5,6 +5,10 @@ on:
     branches:
       - main
 
+# Define permissions for the workflow
+permissions:
+  contents: write
+
 jobs:
   build:
     name: Build and Push Docker Image
