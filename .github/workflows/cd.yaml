@@ -44,7 +44,7 @@ jobs:
       # 5. Atualizar a imagem no kustomization.yaml
       - name: Update Kustomization with new image tag
         run: |
-          # Certifique-se que o nome 'goserver-gitops' é o mesmo que está no seu kustomization.yaml
+          cd k8s 
           kustomize edit set image goserver-gitops=${{ secrets.DOCKERHUB_USERNAME }}/gitops:${{ github.sha }}
 
       # 6. Commit das alterações
@@ -52,7 +52,7 @@ jobs:
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add kustomization.yaml # Passo essencial: adicionar o arquivo alterado
+          git add k8s/kustomization.yaml
           git commit -m "Update kustomization.yaml with new image tag: ${GITHUB_SHA}"
 
       # 7. Push
